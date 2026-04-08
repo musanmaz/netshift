@@ -25,10 +25,10 @@
 	<key>LSMinimumSystemVersion</key>
 	<string>14.0</string>
 	<key>LSUIElement</key>
-	<false/>
+	<true/>
 	<key>NSAppleEventsUsageDescription</key>
 	<string>NetShift needs administrator privileges to modify DNS settings and the /etc/hosts file.</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2025 Mehmet Şirin Usanmaz. All rights reserved.</string>
+	<string>Copyright © 2025 Mehmet Sirin Usanmaz. All rights reserved.</string>
 </dict>
 </plist>

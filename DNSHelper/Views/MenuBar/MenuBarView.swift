@@ -66,8 +66,8 @@ struct MenuBarView: View {
             }
             .keyboardShortcut("e", modifiers: .command)
 
-            SettingsLink {
-                Text("Preferences...")
+            Button("Preferences...") {
+                NotificationCenter.default.post(name: .openPreferencesWindow, object: nil)
             }
             .keyboardShortcut(",", modifiers: .command)
 
@@ -107,4 +107,5 @@ struct MenuBarView: View {
 
 extension Notification.Name {
     static let openEditorWindow = Notification.Name("openEditorWindow")
+    static let openPreferencesWindow = Notification.Name("openPreferencesWindow")
 }
