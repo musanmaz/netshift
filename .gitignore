@@ -1,47 +1,35 @@
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
-bin/
-dist/
+# Xcode
+build/
+DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
 
-# Test binary, built with `go test -c`
-*.test
+# Swift Package Manager
+.build/
+.swiftpm/
+Packages/
+Package.resolved
 
-# Output of the go coverage tool, specifically when used with LiteIDE
-*.out
+# macOS
+.DS_Store
+*.dSYM
+*.dSYM.zip
 
-# Dependency directories (remove the comment below to include it)
-# vendor/
+# Legacy Go
+legacy-go/bin/
 
-# Go workspace file
-go.work
-
-# IDE files
-.vscode/
+# IDE
 .idea/
+.vscode/
 *.swp
-*.swo
 *~
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Logs
-*.log
-
-# Environment variables
-.env
-.env.local
-
-# Temporary files
-tmp/
-temp/
+# Archives
+*.ipa
+*.xcarchive

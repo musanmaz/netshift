@@ -1,202 +1,142 @@
-# DNS Helper
+# NetShift
 
-**DNS Helper** is a cross-platform (macOS / Linux / Windows) tool that allows you to switch DNS servers with a single command and measure which DNS is faster.
+NetShift is a simple DNS and hosts file manager for macOS. It lets you edit hosts files, switch between them, and change DNS servers with a single click.
 
-> ⚠️ **Note**: Changing DNS settings requires administrator privileges on most systems.
-> - **macOS**: `sudo` with `networksetup` calls
-> - **Linux**: `resolvectl` / `nmcli` / or `/etc/resolv.conf` (sudo)
-> - **Windows**: PowerShell `Set-DnsClientServerAddress` (Administrator)
+## System Requirements
 
-**Version**: 0.0.3
+Requires macOS 14 (Sonoma) or later.
 
-## Features
+## Download
 
-- **Easy switching**: `dns-helper switch cloudflare`
-- **Built-in profiles**: `cloudflare`, `google`, `quad9`, `opendns`
-- **Benchmarking**: DNS latency comparison (avg/p50/p90, success rate)
-- **Status viewing**: See your active DNS settings and interfaces
-- **Dry-run mode**: Preview changes before applying them
-- **Cross-platform**: Works on macOS, Linux, and Windows
+[Download latest release (1.0.0)](https://github.com/musanmaz/netshift/releases)
 
 ## Installation
 
-### Option 1: Go Installation (Recommended)
-If you have Go 1.22+ installed:
+Drag the app from Downloads to your Applications folder. On first launch, it will ask for your admin password once to install a helper tool — after that, no password is ever asked again.
 
-```bash
-go install github.com/musanmaz/dns-helper/cmd/dns-helper@latest
-```
+## How It Works
 
-### Option 2: Download Binary
-Download the latest release for your platform from the [Releases page](https://github.com/musanmaz/dns-helper/releases).
+### Hosts File Management
+NetShift monitors the `/etc/hosts` system file and updates it with whichever hosts file you activate.
 
-### Option 3: Build from Source
-```bash
-git clone https://github.com/musanmaz/dns-helper.git
-cd dns-helper
-make build
-```
+Your custom hosts files are stored in `~/Library/NetShift`.
 
-## Quick Start
+### DNS Management
+NetShift uses the macOS `networksetup` command to change DNS servers on all your network interfaces. It automatically flushes the DNS cache after each change.
 
-### List Available Profiles
-```bash
-dns-helper list
-```
+### Application Log
+The log file is located at `~/Library/Logs/DNS Helper.log`. Check this file when reporting issues.
 
-### Switch DNS Server
-```bash
-# Use a preset profile
-dns-helper switch cloudflare
+## Usage Guide
 
-# Use custom DNS servers
-dns-helper switch custom 1.1.1.1 1.0.0.1
+NetShift typically runs in the background. It adds an icon to the menu bar — from there you can access the main editor window and quickly switch between hosts files and DNS profiles.
 
-# Preview changes without applying
-dns-helper switch cloudflare --dry-run
-```
+### Main Editor
 
-### Reset DNS to DHCP Defaults
-```bash
-# Reset all interfaces to DHCP DNS
-dns-helper reset
+The main editor consists of three parts: the **toolbar**, the **hosts file list** on the left, and the **file editor** on the right. By default, you'll find a file called **Original** under the "Local" section, which is a copy of your original `/etc/hosts` file.
 
-# Preview what would be reset
-dns-helper reset --dry-run
-```
+### Hosts/DNS Switching
 
-### Check Current DNS Status
-```bash
-dns-helper status
-```
+Use the segmented control at the top of the editor window to switch between the **Hosts** and **DNS** panels.
 
-### Benchmark DNS Performance
-```bash
-# Benchmark a specific profile
-dns-helper benchmark cloudflare
+### Creating Files
 
-# Benchmark all profiles
-dns-helper benchmark all
+Click the **Create (+)** button in the toolbar to add a new file, then choose the file type (Local, Remote, or Combined).
 
-# Custom benchmark settings
-dns-helper benchmark all --domains google.com,github.com --runs 10 --timeout 2s
-```
+### Deleting Files
 
-## Available DNS Profiles
+Select a file and click the **Delete** button in the toolbar.
+
+### Activating Files
+
+Select a file and click the **Activate** button, or choose it from the menu bar icon. NetShift will update `/etc/hosts` with the activated file's content. The active file is shown with a checkmark in the list.
+
+## Hosts File Types
+
+### Local Files
+Local files that you can freely edit.
+
+### Remote Files
+Files that NetShift downloads and syncs from remote URLs. You can adjust the update frequency in Preferences or force an update from the menu bar. These files cannot be edited since they are overwritten on updates.
+
+### Combined Files
+A standout feature of NetShift. A combined file contains a list of local and remote files rather than hosts entries. When activated, the contents of all child files are merged and applied together.
+
+## DNS Profiles
 
 | Profile | Primary DNS | Secondary DNS | Description |
-|---------|-------------|---------------|-------------|
-| `cloudflare` | 1.1.1.1 | 1.0.0.1 | Fast, privacy-focused DNS |
-| `google` | 8.8.8.8 | 8.8.4.4 | Google's public DNS |
-| `quad9` | 9.9.9.9 | 149.112.112.112 | Security-focused DNS |
-| `opendns` | 208.67.222.222 | 208.67.220.220 | Cisco's OpenDNS |
+|---------|------------|---------------|-------------|
+| Cloudflare | 1.1.1.1 | 1.0.0.1 | Fast, privacy-focused DNS |
+| Google | 8.8.8.8 | 8.8.4.4 | Google Public DNS |
+| Quad9 | 9.9.9.9 | 149.112.112.112 | Security-focused DNS |
+| OpenDNS | 208.67.222.222 | 208.67.220.220 | Cisco OpenDNS |
 
-## Command Reference
+Custom DNS servers can also be entered from the DNS panel.
 
-### `dns-helper switch [profile|custom] [ip1 ip2 ...]`
-Switch to a preset DNS profile or custom IP addresses.
+## DNS Benchmark
 
-**Flags:**
-- `--dry-run`: Show what would happen without making changes
+Compare the performance of all profiles from the **Benchmark** section in the DNS panel. Average, P50 and P90 latency values along with success rates are displayed.
 
-**Examples:**
-```bash
-dns-helper switch cloudflare
-dns-helper switch custom 8.8.8.8 8.8.4.4
-dns-helper switch google --dry-run
-```
+## Hosts File Sources
 
-### `dns-helper reset`
-Reset DNS settings to DHCP defaults for all network interfaces.
+For quality hosts files: [https://github.com/StevenBlack/hosts](https://github.com/StevenBlack/hosts)
 
-**Flags:**
-- `--dry-run`: Show what would happen without making changes
+## Keyboard Shortcuts
 
-**Examples:**
-```bash
-dns-helper reset
-dns-helper reset --dry-run
-```
-
-### `dns-helper status`
-Display current DNS settings for all network interfaces.
-
-### `dns-helper list`
-Show all available DNS profiles with their IP addresses.
-
-### `dns-helper benchmark [profile|all]`
-Measure DNS resolver performance and latency.
-
-**Flags:**
-- `--domains`: Comma-separated list of domains to test (default: turk.net,google.com,cloudflare.com)
-- `--runs`: Number of queries per domain (default: 5)
-- `--timeout`: Single query timeout (default: 1.2s)
-
-**Examples:**
-```bash
-dns-helper benchmark cloudflare
-dns-helper benchmark all --domains example.com,test.com --runs 10
-```
-
-## Platform-Specific Details
-
-### macOS
-- Uses `networksetup` to configure DNS
-- Automatically flushes DNS cache
-- Restarts mDNSResponder service
-- Requires `sudo` privileges
-
-### Linux
-- Prioritizes `systemd-resolved` with `resolvectl`
-- Falls back to NetworkManager with `nmcli`
-- Last resort: direct `/etc/resolv.conf` modification
-- Requires appropriate privileges
-
-### Windows
-- Uses PowerShell `Set-DnsClientServerAddress`
-- Applies to all active network adapters
-- Requires Administrator privileges
-- Runs PowerShell with execution policy bypass
+| Shortcut | Action |
+|----------|--------|
+| Cmd+N | Create new file |
+| Cmd+Shift+A | Activate selected file |
+| Cmd+, | Preferences |
+| Cmd+E | Open editor |
+| Cmd+Q | Quit |
 
 ## Development
 
-### Prerequisites
-- Go 1.22+
-- Make (optional, for build automation)
+### Requirements
+- Xcode 15 or later
+- macOS 13+ SDK
 
 ### Build
+
+Open the project with Xcode:
+
 ```bash
-make build
+open Package.swift
 ```
 
-### Test
+Or build from the command line:
+
 ```bash
-make test
+swift build
 ```
 
-### Run
-```bash
-make run
-```
+### Create App Bundle
 
-### Release
 ```bash
-make release
+./build-app.sh
 ```
 
 ## Project Structure
 
 ```
 dns-helper/
-├── cmd/dns-helper/     # Main application entry point
-├── internal/
-│   ├── bench/          # DNS benchmarking logic
-│   ├── cli/            # Command-line interface
-│   ├── platform/       # Platform-specific DNS operations
-│   ├── resolvers/      # DNS profile definitions
-│   └── util/           # Utility functions
-├── Makefile            # Build automation
-└── README.md           # This file
+├── DNSHelper/
+│   ├── App/                # App entry point
+│   ├── Models/             # Data models
+│   ├── Services/           # Business logic services
+│   ├── Views/              # SwiftUI views
+│   │   ├── MenuBar/        # Menu bar
+│   │   ├── Editor/         # Main editor window
+│   │   ├── DNS/            # DNS management panel
+│   │   ├── Preferences/    # Preferences
+│   │   ├── Onboarding/     # First-run guide
+│   │   └── Shared/         # Shared components
+│   ├── Theme/              # Design system
+│   └── Resources/          # Assets, Info.plist
+├── legacy-go/              # Legacy Go CLI code (reference)
+├── Package.swift           # Swift Package Manager
+└── README.md
 ```
 
 ## Contributing
@@ -204,40 +144,16 @@ dns-helper/
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+4. Submit a pull request
 
 ## License
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache License 2.0 — see the [LICENSE](LICENSE) file for details.
 
 ## Security
 
-⚠️ **Important**: This tool modifies system DNS settings, which can affect your internet connectivity. Always use `--dry-run` first to preview changes, and ensure you have a backup plan if something goes wrong.
-
-## Troubleshooting
-
-### Permission Denied
-- **macOS/Linux**: Use `sudo` before the command
-- **Windows**: Run PowerShell as Administrator
-
-### DNS Changes Not Applied
-- Try flushing DNS cache manually
-- Restart network services
-- Check if your system uses a managed DNS configuration
-
-### Benchmark Fails
-- Ensure internet connectivity
-- Check firewall settings
-- Try different domains or increase timeout
-
-## Support
-
-If you encounter issues or have questions:
-1. Check the [Issues](https://github.com/musanmaz/dns-helper/issues) page
-2. Create a new issue with detailed information
-3. Include your operating system and Go version
+This app modifies system DNS settings and the `/etc/hosts` file. Admin password is required only once during initial setup. The helper tool only supports 4 specific commands and cannot execute arbitrary code.
 
 ---
 
-**Made with ❤️ by [Mehmet Şirin Usanmaz](https://github.com/musanmaz)**
+**Developed by Mehmet Sirin Usanmaz** — [GitHub](https://github.com/musanmaz)

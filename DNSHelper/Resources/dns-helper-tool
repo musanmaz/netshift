@@ -1,0 +1,26 @@
+#!/bin/bash
+# DNS Helper - Privileged Helper Tool
+# Only allows specific, safe operations.
+
+case "$1" in
+  write-hosts)
+    [ -z "$2" ] && exit 1
+    cp "$2" /etc/hosts && chmod 644 /etc/hosts
+    ;;
+  set-dns)
+    shift
+    networksetup -setdnsservers "$@"
+    ;;
+  reset-dns)
+    [ -z "$2" ] && exit 1
+    networksetup -setdnsservers "$2" empty
+    ;;
+  flush-dns)
+    dscacheutil -flushcache
+    killall -HUP mDNSResponder 2>/dev/null
+    ;;
+  *)
+    echo "Unknown command: $1" >&2
+    exit 1
+    ;;
+esac
