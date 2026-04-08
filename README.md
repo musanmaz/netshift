@@ -12,7 +12,13 @@ Requires macOS 14 (Sonoma) or later.
 
 ## Installation
 
-Drag the app from Downloads to your Applications folder. On first launch, it will ask for your admin password once to install a helper tool — after that, no password is ever asked again.
+1. Download `NetShift-macos.zip` from [Releases](https://github.com/musanmaz/netshift/releases)
+2. Unzip and drag `NetShift.app` to your Applications folder
+3. **Important:** Since the app is not notarized, macOS may block it. To fix this, open Terminal and run:
+   ```bash
+   xattr -cr /Applications/NetShift.app
+   ```
+4. Launch NetShift and complete the one-time setup
 
 ## How It Works
 

@@ -6,10 +6,19 @@ struct HostsFileRow: View {
 
     @EnvironmentObject var hostsManager: HostsFileManager
 
+    private var toggleBinding: Binding<Bool> {
+        Binding(
+            get: { isActive },
+            set: { newValue in
+                if newValue && !isActive {
+                    try? hostsManager.activateFile(file)
+                }
+            }
+        )
+    }
+
     var body: some View {
         HStack(spacing: DesignTokens.Spacing.sm) {
-            activateButton
-
             Image(systemName: file.type.sfSymbol)
                 .foregroundStyle(iconColor)
                 .font(.system(size: DesignTokens.IconSize.sm))
@@ -26,34 +35,15 @@ struct HostsFileRow: View {
                     .font(.system(size: 9))
                     .foregroundStyle(.tertiary)
             }
+
+            Toggle("", isOn: toggleBinding)
+                .toggleStyle(.switch)
+                .controlSize(.mini)
+                .labelsHidden()
+                .tint(Color.dnsSuccess)
         }
         .padding(.vertical, 2)
         .contextMenu { contextMenuItems }
-    }
-
-    private var activateButton: some View {
-        Button {
-            if !isActive {
-                try? hostsManager.activateFile(file)
-            }
-        } label: {
-            ZStack {
-                Circle()
-                    .strokeBorder(isActive ? Color.dnsSuccess : Color.secondary.opacity(0.4), lineWidth: isActive ? 0 : 1.5)
-                    .frame(width: 18, height: 18)
-
-                if isActive {
-                    Circle()
-                        .fill(Color.dnsSuccess)
-                        .frame(width: 18, height: 18)
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(.white)
-                }
-            }
-        }
-        .buttonStyle(.plain)
-        .help(isActive ? "Active" : "Activate")
     }
 
     private var iconColor: Color {
