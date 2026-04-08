@@ -77,10 +77,6 @@ Custom DNS servers can also be entered from the DNS panel.
 
 Compare the performance of all profiles from the **Benchmark** section in the DNS panel. Average, P50 and P90 latency values along with success rates are displayed.
 
-## Hosts File Sources
-
-For quality hosts files: [https://github.com/StevenBlack/hosts](https://github.com/StevenBlack/hosts)
-
 ## Keyboard Shortcuts
 
 | Shortcut | Action |
@@ -115,6 +111,17 @@ swift build
 
 ```bash
 ./build-app.sh
+```
+
+### Create a Release
+
+Build the app in release mode, zip it, and upload to GitHub:
+
+```bash
+swift build -c release
+./build-app.sh
+cd build && zip -r NetShift-macos.zip NetShift.app && cd ..
+gh release create v1.0.0 build/NetShift-macos.zip --title "NetShift v1.0.0" --notes "Initial release"
 ```
 
 ## Project Structure
