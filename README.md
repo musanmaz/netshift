@@ -2,6 +2,16 @@
 
 NetShift is a simple DNS and hosts file manager for macOS. It lets you edit hosts files, switch between them, and change DNS servers with a single click.
 
+## Screenshots
+
+| Hosts Editor | DNS Profiles |
+|:---:|:---:|
+| ![Editor](screenshots/editor.png) | ![DNS Profiles](screenshots/dns-profiles.png) |
+
+| Benchmark | Preferences |
+|:---:|:---:|
+| ![Benchmark](screenshots/benchmark.png) | ![Preferences](screenshots/preferences.png) |
+
 ## System Requirements
 
 Requires macOS 14 (Sonoma) or later.
