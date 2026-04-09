@@ -54,10 +54,23 @@ struct HostsCodeEditor: NSViewRepresentable {
             let selectedRanges = textView.selectedRanges
             textView.string = text
             textView.selectedRanges = selectedRanges
-            textView.applyHighlighting()
         }
         textView.isEditable = isEditable
         textView.font = NSFont.monospacedSystemFont(ofSize: fontSize, weight: .regular)
+        textView.textContainerInset = NSSize(width: showLineNumbers ? 50 : 12, height: 8)
+
+        if showLineNumbers {
+            if scrollView.verticalRulerView == nil {
+                let rulerView = LineNumberRulerView(textView: textView)
+                scrollView.verticalRulerView = rulerView
+                scrollView.hasVerticalRuler = true
+            }
+            scrollView.rulersVisible = true
+        } else {
+            scrollView.rulersVisible = false
+        }
+
+        textView.applyHighlighting()
     }
 
     func makeCoordinator() -> Coordinator {

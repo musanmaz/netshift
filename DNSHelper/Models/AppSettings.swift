@@ -1,19 +1,89 @@
 import SwiftUI
+import AppKit
 
 final class AppSettings: ObservableObject {
     static let shared = AppSettings()
 
-    @AppStorage("showFileNameInStatusBar") var showFileNameInStatusBar = false
-    @AppStorage("launchAtLogin") var launchAtLogin = false
-    @AppStorage("remoteSyncInterval") var remoteSyncInterval: RemoteSyncInterval = .sixHours
-    @AppStorage("editorFontSize") var editorFontSize: Double = 13
-    @AppStorage("showLineNumbers") var showLineNumbers = true
-    @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding = false
-    @AppStorage("appearanceMode") var appearanceMode: AppearanceMode = .system
-    @AppStorage("logLevel") var logLevel: LogLevel = .info
-    @AppStorage("helperInstalled") var helperInstalled = false
+    @Published var showFileNameInStatusBar: Bool {
+        didSet { UserDefaults.standard.set(showFileNameInStatusBar, forKey: "showFileNameInStatusBar") }
+    }
+    @Published var launchAtLogin: Bool {
+        didSet { UserDefaults.standard.set(launchAtLogin, forKey: "launchAtLogin") }
+    }
+    @Published var remoteSyncInterval: RemoteSyncInterval {
+        didSet { UserDefaults.standard.set(remoteSyncInterval.rawValue, forKey: "remoteSyncInterval") }
+    }
+    @Published var editorFontSize: Double {
+        didSet { UserDefaults.standard.set(editorFontSize, forKey: "editorFontSize") }
+    }
+    @Published var showLineNumbers: Bool {
+        didSet { UserDefaults.standard.set(showLineNumbers, forKey: "showLineNumbers") }
+    }
+    @Published var hasCompletedOnboarding: Bool {
+        didSet { UserDefaults.standard.set(hasCompletedOnboarding, forKey: "hasCompletedOnboarding") }
+    }
+    @Published var appearanceMode: AppearanceMode {
+        didSet {
+            UserDefaults.standard.set(appearanceMode.rawValue, forKey: "appearanceMode")
+            applyAppearance()
+        }
+    }
+    @Published var logLevel: LogLevel {
+        didSet { UserDefaults.standard.set(logLevel.rawValue, forKey: "logLevel") }
+    }
+    @Published var helperInstalled: Bool {
+        didSet { UserDefaults.standard.set(helperInstalled, forKey: "helperInstalled") }
+    }
 
-    private init() {}
+    private init() {
+        let defaults = UserDefaults.standard
+        self.showFileNameInStatusBar = defaults.bool(forKey: "showFileNameInStatusBar")
+        self.launchAtLogin = defaults.bool(forKey: "launchAtLogin")
+        self.hasCompletedOnboarding = defaults.bool(forKey: "hasCompletedOnboarding")
+        self.helperInstalled = defaults.bool(forKey: "helperInstalled")
+
+        let fontSize = defaults.double(forKey: "editorFontSize")
+        self.editorFontSize = fontSize > 0 ? fontSize : 13
+
+        self.showLineNumbers = defaults.object(forKey: "showLineNumbers") == nil
+            ? true : defaults.bool(forKey: "showLineNumbers")
+
+        if let raw = defaults.string(forKey: "remoteSyncInterval"),
+           let val = RemoteSyncInterval(rawValue: raw) {
+            self.remoteSyncInterval = val
+        } else {
+            self.remoteSyncInterval = .sixHours
+        }
+
+        if let raw = defaults.string(forKey: "appearanceMode"),
+           let val = AppearanceMode(rawValue: raw) {
+            self.appearanceMode = val
+        } else {
+            self.appearanceMode = .system
+        }
+
+        if let raw = defaults.string(forKey: "logLevel"),
+           let val = LogLevel(rawValue: raw) {
+            self.logLevel = val
+        } else {
+            self.logLevel = .info
+        }
+
+        applyAppearance()
+    }
+
+    func applyAppearance() {
+        DispatchQueue.main.async {
+            switch self.appearanceMode {
+            case .system:
+                NSApp?.appearance = nil
+            case .light:
+                NSApp?.appearance = NSAppearance(named: .aqua)
+            case .dark:
+                NSApp?.appearance = NSAppearance(named: .darkAqua)
+            }
+        }
+    }
 }
 
 enum RemoteSyncInterval: String, CaseIterable, Codable {
