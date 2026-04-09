@@ -14,6 +14,7 @@ struct DNSHelperApp: App {
                 .environmentObject(hostsManager)
                 .environmentObject(dnsManager)
                 .environmentObject(settings)
+                .preferredColorScheme(settings.appearanceMode.colorScheme)
                 .frame(
                     minWidth: DesignTokens.WindowSize.editorMinimum.width,
                     minHeight: DesignTokens.WindowSize.editorMinimum.height
@@ -35,6 +36,9 @@ struct DNSHelperApp: App {
             height: DesignTokens.WindowSize.editorDefault.height
         )
         .defaultPosition(.center)
+        .commands {
+            CommandGroup(replacing: .newItem) { }
+        }
 
         MenuBarExtra {
             MenuBarView()
@@ -54,6 +58,7 @@ struct DNSHelperApp: App {
         Settings {
             PreferencesView()
                 .environmentObject(settings)
+                .preferredColorScheme(settings.appearanceMode.colorScheme)
         }
     }
 

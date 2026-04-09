@@ -24,10 +24,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
-        if !hasVisibleWindows {
-            showEditorWindow()
-        }
-        return true
+        showEditorWindow()
+        return false
     }
 
     // MARK: - NSWindowDelegate
@@ -68,14 +66,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private func showEditorWindow() {
         if let window = findEditorWindow() {
             bringToFront(window)
-        } else {
-            NSApp.setActivationPolicy(.regular)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                NSApp.sendAction(Selector(("newWindowForTab:")), to: nil, from: nil)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
-                    if let w = self?.findEditorWindow() {
-                        self?.bringToFront(w)
-                    }
+            return
+        }
+
+        NSApp.setActivationPolicy(.regular)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            NSApp.activate(ignoringOtherApps: true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+                if let w = self?.findEditorWindow() {
+                    self?.bringToFront(w)
                 }
             }
         }
