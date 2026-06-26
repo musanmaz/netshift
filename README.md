@@ -26,8 +26,18 @@ Requires macOS 14 (Sonoma) or later.
 
 ```bash
 brew tap musanmaz/netshift
+brew trust musanmaz/netshift
 brew install --cask netshift
 ```
+
+> `brew trust` is required once because Homebrew now blocks loading casks from
+> non-official taps until you explicitly trust them. It permanently trusts this
+> tap (including future updates) on your machine. Alternatively, install with the
+> fully-qualified name to trust just this cask:
+>
+> ```bash
+> brew install --cask musanmaz/netshift/netshift
+> ```
 
 ### Manual
 
