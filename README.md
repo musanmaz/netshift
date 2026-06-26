@@ -166,7 +166,6 @@ dns-helper/
 │   │   └── Shared/         # Shared components
 │   ├── Theme/              # Design system
 │   └── Resources/          # Assets, Info.plist
-├── legacy-go/              # Legacy Go CLI code (reference)
 ├── Package.swift           # Swift Package Manager
 └── README.md
 ```

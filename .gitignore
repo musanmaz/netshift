@@ -21,9 +21,6 @@ Package.resolved
 *.dSYM
 *.dSYM.zip
 
-# Legacy Go
-legacy-go/bin/
-
 # IDE
 .idea/
 .vscode/

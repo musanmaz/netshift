@@ -123,11 +123,13 @@ struct MainEditorView: View {
                 .disabled(hostsManager.selectedFile == nil || hostsManager.selectedFile?.isOriginal == true)
 
                 Button {
-                    activateSelected()
+                    toggleSelected()
                 } label: {
-                    Label("Activate", systemImage: "checkmark.circle")
+                    let isActive = hostsManager.selectedFile?.isActive == true
+                    Label(isActive ? "Deactivate" : "Activate",
+                          systemImage: isActive ? "checkmark.circle.fill" : "checkmark.circle")
                 }
-                .help("Activate selected file as /etc/hosts")
+                .help("Toggle selected file in /etc/hosts (multiple files can be active)")
                 .keyboardShortcut("a", modifiers: [.command, .shift])
                 .disabled(hostsManager.selectedFile == nil)
             }
@@ -145,11 +147,12 @@ struct MainEditorView: View {
 
     // MARK: - Actions
 
-    private func activateSelected() {
+    private func toggleSelected() {
         guard let file = hostsManager.selectedFile else { return }
+        let willActivate = !file.isActive
         do {
-            try hostsManager.activateFile(file)
-            showToast("'\(file.name)' activated", style: .success)
+            try hostsManager.toggleActive(file)
+            showToast("'\(file.name)' \(willActivate ? "activated" : "deactivated")", style: .success)
         } catch {
             showToast("Activation error: \(error.localizedDescription)", style: .error)
         }

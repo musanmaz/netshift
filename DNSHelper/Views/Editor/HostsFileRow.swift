@@ -10,9 +10,8 @@ struct HostsFileRow: View {
         Binding(
             get: { isActive },
             set: { newValue in
-                if newValue && !isActive {
-                    try? hostsManager.activateFile(file)
-                }
+                guard newValue != isActive else { return }
+                try? hostsManager.setActive(file, newValue)
             }
         )
     }

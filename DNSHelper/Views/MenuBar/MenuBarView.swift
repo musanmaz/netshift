@@ -6,8 +6,9 @@ struct MenuBarView: View {
 
     var body: some View {
         Group {
-            if let active = hostsManager.activeFile {
-                Label("Active: \(active.name)", systemImage: "checkmark.circle.fill")
+            if !hostsManager.activeFiles.isEmpty {
+                let names = hostsManager.activeFiles.map(\.name).joined(separator: ", ")
+                Label("Active: \(names)", systemImage: "checkmark.circle.fill")
                     .disabled(true)
             }
 
@@ -16,7 +17,7 @@ struct MenuBarView: View {
             Text("Hosts Files")
             ForEach(hostsManager.files) { file in
                 Button {
-                    activateHostsFile(file)
+                    toggleHostsFile(file)
                 } label: {
                     HStack {
                         if file.isActive {
@@ -80,9 +81,9 @@ struct MenuBarView: View {
         }
     }
 
-    private func activateHostsFile(_ file: HostsFile) {
+    private func toggleHostsFile(_ file: HostsFile) {
         do {
-            try hostsManager.activateFile(file)
+            try hostsManager.toggleActive(file)
         } catch {
             AppLogger.shared.error("Hosts activation error: \(error.localizedDescription)")
         }
