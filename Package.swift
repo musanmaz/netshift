@@ -10,6 +10,10 @@ let package = Package(
         .executableTarget(
             name: "DNSHelper",
             path: "DNSHelper",
+            exclude: [
+                "Info.plist",
+                "DNSHelper.entitlements",
+            ],
             resources: [
                 .process("Resources"),
             ]

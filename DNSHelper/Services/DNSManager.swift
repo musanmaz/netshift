@@ -113,8 +113,9 @@ final class DNSManager: ObservableObject {
                     results.append(NetworkService(id: service, name: service, dnsServers: servers))
                 }
 
+                let snapshot = results
                 await MainActor.run {
-                    self.networkServices = results
+                    self.networkServices = snapshot
                     self.detectActiveProfile()
                 }
             } catch {

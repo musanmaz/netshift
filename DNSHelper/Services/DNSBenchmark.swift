@@ -89,15 +89,17 @@ final class DNSBenchmark: ObservableObject {
                     }
 
                     completedOps += 1
+                    let progressValue = completedOps / totalOperations
                     await MainActor.run {
-                        self.progress = completedOps / totalOperations
+                        self.progress = progressValue
                     }
                 }
             }
 
             allResults.append(result)
+            let snapshot = allResults
             await MainActor.run {
-                self.results = allResults
+                self.results = snapshot
             }
         }
 

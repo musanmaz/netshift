@@ -22,7 +22,8 @@ final class RemoteSyncService: ObservableObject {
         timer = Timer.publish(every: interval, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
-                Task { await self?.syncAllRemoteFiles() }
+                guard let self else { return }
+                Task { await self.syncAllRemoteFiles() }
             }
     }
 
